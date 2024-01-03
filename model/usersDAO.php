@@ -8,59 +8,48 @@ include_once 'model/users.php';
             $this->pdo = Database::getInstance()->getConnection(); 
         }
 
-        public function addUser($idRoute, $idBus, $date_, $heure_depart, $heure_arrivee, $sieges_dispo){
-            $insert = "INSERT INTO horaire VALUES(0,'$idRoute', '$idBus', '$date_','$heure_depart','$heure_arrivee','$sieges_dispo')";
+        public function addUser($username, $password, $email, $isActive, $registrationDate, $role, $companyID){
+            $insert = "INSERT INTO user VALUES(0,'$username', '$password', '$email', '$isActive', '$registrationDate', '$role', '$companyID')";
             $stmt = $this->pdo->prepare($insert);
             $stmt->execute();
-            header('Location:index.php?action=horaires');
+            // header('Location:index.php?action=horaires');
         }
         
         
-        public function getAllHoraires(){
-            $selectAll = "SELECT * from horaire";
+        public function getAllUsers(){
+            $selectAll = "SELECT * from user";
             $stmt = $this->pdo->prepare($selectAll);
             $stmt->execute();
-            $HoraireDATA = array();
-            $AllBHoraire = $stmt->fetchAll();
-            foreach($AllBHoraire as $horaire){
-                $HoraireDATA[] = new Horaire($horaire['idHoraire'],$horaire['idRout'],$horaire['idBus'],$horaire['date_'],$horaire['heur_depart'],$horaire['heur_arrivee'],$horaire['sieges_dispo']);
+            $usersDATA = array();
+            $AllUsers = $stmt->fetchAll();
+            foreach($AllUsers as $user){
+                $usersDATA[] = new Users($user['userID'],$user['username'],$user['password'],$user['email'],$user['isActive'],$user['registrationDate'],$user['role'],$user['companyID']);
             }
-            return $HoraireDATA;
+            return $usersDATA;
         }
-        public function getHoraireById($id){
-            $selectAll = "SELECT * from horaire where idHoraire='$id'";
+        public function getUserById($id){
+            $selectAll = "SELECT * from user where userID='$id'";
             $stmt = $this->pdo->prepare($selectAll);
             $stmt->execute();
-            $horaire = $stmt->fetch();
-                $HoraireDATA = new Horaire($horaire['idHoraire'],$horaire['idRout'],$horaire['idBus'],$horaire['date_'],$horaire['heur_depart'],$horaire['heur_arrivee'],$horaire['sieges_dispo']);
-            return $HoraireDATA;
-        }
-        public function searchHoraires($vDepart,$vArrivee,$date,$sieges){
-            $selectAll = "SELECT * FROM horaire inner join routee r on horaire.idRout=r.idRout where  r.ville_departID = '$vDepart' and r.ville_arriveeID = '$vArrivee'  and date_ >= '$date' AND sieges_dispo >= '$sieges' GROUP by horaire.idHoraire;";
-            $stmt = $this->pdo->prepare($selectAll);
-            $stmt->execute();
-            $HoraireDATA = array();
-            $AllHoraire = $stmt->fetchAll();
-            foreach($AllHoraire as $horaire){
-                $HoraireDATA[] = new Horaire($horaire['idHoraire'],$horaire['idRout'],$horaire['idBus'],$horaire['date_'],$horaire['heur_depart'],$horaire['heur_arrivee'],$horaire['sieges_dispo']);
-            }
+            $user = $stmt->fetch();
+                $userDATA = new Users($user['userID'],$user['username'],$user['password'],$user['email'],$user['isActive'],$user['registrationDate'],$user['role'],$user['companyID']);
             return $HoraireDATA;
         }
         
         
-        public function UpdateHoraire($idHoraire,$idRoute, $idBus, $date_, $heure_depart, $heure_arrivee, $sieges_dispo){
-            $UpdateHoraire = "UPDATE horaire set idRout = '$idRoute', idBus = '$idBus',date_ = '$date_',heur_depart = '$heure_depart',heur_arrivee = '$heure_arrivee',sieges_dispo = '$sieges_dispo' where idHoraire='$idHoraire'";
-            $stmt = $this->pdo->prepare($UpdateHoraire);
+        public function UpdateUser($username, $password, $email, $isActive, $registrationDate, $role, $companyID){
+            $UpdateUser = "UPDATE user set username = '$username', password = '$password', email = '$email', isActive = '$isActive', registrationDate = '$registrationDate', role = '$role', companyID = '$companyID'";
+            $stmt = $this->pdo->prepare($UpdateUser);
             $stmt->execute();
-            header('Location:index.php?action=horaires');
+            // header('Location:index.php?action=horaires');
         }
         
         
-        public function DeleteHoraire($idHoraire){
-            $DeleteHoraire = "DELETE from horaire where idHoraire=$idHoraire";
-            $stmt = $this->pdo->prepare($DeleteHoraire);
+        public function disableUser($userID){
+            $disableUser = "UPDATE user set isActive = 0 where userID='$userID'";
+            $stmt = $this->pdo->prepare($disableUser);
             $stmt->execute();
-            header('Location:index.php?action=horaires');
+            // header('Location:index.php?action=horaires');
         }
     }
 ?>
