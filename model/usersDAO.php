@@ -33,7 +33,7 @@ include_once 'model/users.php';
             $stmt->execute();
             $user = $stmt->fetch();
                 $userDATA = new Users($user['userID'],$user['username'],$user['password'],$user['email'],$user['isActive'],$user['registrationDate'],$user['role'],$user['companyID']);
-            return $HoraireDATA;
+            return $userDATA;
         }
         
         

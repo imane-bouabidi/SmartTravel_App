@@ -30,7 +30,7 @@ class UserController{
         $companyDATA = $companyDAO->getAllCompanies();
         include('view/addUser.php');
     }
-
+    
     function updateForm(){
         $id = $_GET['id'];
         $usersDAO = new usersDAO();
